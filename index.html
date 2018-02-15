@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Monthly Expenses</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script src="js/jquery-3.1.1.min.js"></script>
+  <script src="js/handlebars.min-6300e57.js"></script>
+  <script id="page-template" type="text/x-handlebars-template">
+    {{#each pages as |page|}}
+      <div class="page">
+        <div class="page_divider"></div>
+        <h2 class="page_title h2">{{page.title}}</h2>
+        
+          {{#each page.sections as |section|}}
+            <section class="section">
+              <div class="section_header">
+                <h3 class="section_title h3">
+                  <a class="tag" id="section-{{section.id}}">{{section.id}}</a> {{section.title}}
+                </h3>
+                {{#if section.description}}
+                  <p class="description">{{section.description}}</p>
+                {{/if}}
+              </div>
+              {{#each contents as |content|}}
+                {{#if content.class_sub_title}}
+                  <h4 class="section_sub-title h4">
+                    {{content.text}}
+                  </h4>
+                {{else if content.class_line}}
+                  {{#if content.math}}
+                    <div class="line line__highlight line__math">
+                  {{else}}
+                    <div class="line">
+                  {{/if}}
+                    <label class="line_label u-flex">
+                      <a class="tag tag__alpha" id="line-{{section.id}}{{content.id}}">
+                        {{content.id}}
+                      </a>
+                      <span class="label">
+                        {{content.label}}
+                      </span>
+                    </label>
+                    <div class="line_input input u-flex">
+                      <div class="input_prefix">
+                        {{content.inputPrefix}}
+                      </div>
+                      <input
+                        id="input-{{section.id}}{{content.id}}"
+                        value="{{content.inputValue}}"
+                        {{#if math}}
+                          data-math="{{math}}"
+                          disabled
+                        {{/if}}
+                        class="input_control"
+                        type="text"
+                      >
+                    </div>
+                    {{#if content.description}}
+                      <div class="line_bottom helper-text">
+                        {{content.description}}
+                      </div>
+                    {{/if}}
+                  </div>
+                {{/if}}
+              {{/each}}
+            </section>
+          {{/each}}
+      </div>
+    {{/each}}
+  </script>
+</head>
+<body>
+
+<script>
+  var source = $('#page-template').html();
+  var template = Handlebars.compile(source);
+  var context = {
+    pages: [
+      {
+        title: 'Assess your current income, spending, and savings.',
+        sections: [
+          {
+            id: '1',
+            title: 'Monthly income',
+            description: '',
+            contents: [
+              {
+                class_sub_title: true,
+                text: 'Pre-tax income'
+              },
+              {
+                class_line: true,
+                id: 'a',
+                label: 'Your income',
+                inputPrefix: '= $',
+                inputValue: '',
+                description: ''
+              },
+              {
+                class_line: true,
+                id: 'b',
+                label: 'Co-borrower\'s Income',
+                inputPrefix: '+ $',
+                inputValue: '',
+                description: ''
+              },
+              {
+                class_line: true,
+                id: 'c',
+                label: 'Total monthly pre-tax income',
+                inputPrefix: '= $',
+                math: '1a + 1b',
+                description: ''
+              },
+              {
+                class_sub_title: true,
+                text: 'Take-home income'
+              },
+              {
+                class_line: true,
+                id: 'd',
+                label: 'Your income',
+                inputPrefix: '= $',
+                inputValue: '',
+                description: ''
+              },
+              {
+                class_line: true,
+                id: 'e',
+                label: 'Co-borrower\'s Income',
+                inputPrefix: '+ $',
+                inputValue: '',
+                description: ''
+              },
+              {
+                class_line: true,
+                id: 'f',
+                label: 'Total monthly take-home income',
+                inputPrefix: '= $',
+                description: '',
+                math: '1d + 1e'
+              }
+            ]
+          },
+          {
+            id: '2',
+            title: 'Monthly spending and savings',
+            description: '',
+            contents: [
+              {
+                class_line: true,
+                id: 'g',
+                label: 'Rent',
+                inputPrefix: '$',
+                inputValue: '',
+                description: ''
+              },
+              {
+                class_line: true,
+                id: 'h',
+                label: 'Utilities',
+                inputPrefix: '+ $',
+                inputValue: '',
+                description: 'Electricity, gas, water, phone, internet, etc.'
+              },
+              {
+                class_line: true,
+                id: 'i',
+                label: 'Debt payments',
+                inputPrefix: '+ $',
+                inputValue: '',
+                description: 'Student loans, car loans, credit card debt, etc.'
+              },
+              {
+                class_line: true,
+                id: 'j',
+                label: 'Living & other expenses',
+                inputPrefix: '+ $',
+                inputValue: '',
+                description: 'Groceries, transportation, child care, child support, eating out, health, entertainment, etc.'
+              },
+              {
+                class_line: true,
+                id: 'k',
+                label: 'Savings',
+                inputPrefix: '+ $',
+                inputValue: '',
+                description: 'Amount you put away each month from your take-home income.'
+              },
+              {
+                class_line: true,
+                id: 'l',
+                label: 'Total monthly spending and savings',
+                inputPrefix: '= $',
+                description: '',
+                math: '2g + 2h + 2i + 2j + 2k'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'Estimate your financial responsibilities after buying a home.',
+        sections: [
+          {
+            id: '3',
+            title: 'Future monthly savings goals',
+            description: 'Your savings goals as a homeowner may be different than your current goals. Enter the amount you want to put away each month from your take-home income.',
+            contents: [
+              {
+                class_line: true,
+                id: 'm',
+                label: 'Emergency savings',
+                inputPrefix: '$',
+                inputValue: '',
+                description: 'A good rule of thumb is to have at least 3-6 months of expenses saved.'
+              },
+              {
+                class_line: true,
+                id: 'n',
+                label: 'Long-term savings',
+                inputPrefix: '+ $',
+                inputValue: '',
+                description: 'Savings for retirement, kids’ college, vacations, or other goals.'
+              },
+              {
+                class_line: true,
+                id: 'o',
+                label: 'Total future monthly savingsgoals',
+                inputPrefix: '= $',
+                description: '',
+                math: '3m + 3n'
+              }
+            ]
+          },
+          {
+            id: '4',
+            title: 'New homeownership expenses',
+            description: 'There are more costs to being a homeowner than just the monthly mortgage payment. Estimate these homeownership expenses on a monthly basis.',
+            contents: [
+              {
+                class_line: true,
+                id: 'p',
+                label: 'Home maintenance',
+                inputPrefix: '$',
+                inputValue: '',
+                description: 'A common rule of thumb is 1% of your target home price (divide by 12 to get a monthly amount).',
+                math: '6t * .01 * .0833'
+              },
+              {
+                class_line: true,
+                id: 'q',
+                label: 'Home improvement',
+                inputPrefix: '$',
+                inputValue: '',
+                description: 'This is up to you. What kinds of improvements do you plan to make? How much do you want to set aside monthly?'
+              },
+              {
+                class_line: true,
+                id: 'r',
+                label: 'Condo/HOA fees',
+                inputPrefix: '$',
+                inputValue: '',
+                description: 'These fees can vary widely depending on the speci c building or HOA. Explore listings in your target neighborhoods to make an estimate.'
+              }
+            ]
+          },
+          {
+            id: '5',
+            title: 'Changed monthly expenses',
+            description: 'Estimate the total monthly utilities you will pay as a homeowner. If some of your utilities are included in your rent now, you’ll likely have to pay for them separately as a homeowner. Utilities may also increase with a larger home.',
+            contents: [
+              {
+                class_line: true,
+                id: 's',
+                label: 'Future utilities',
+                inputPrefix: '$',
+                inputValue: '',
+                description: ''
+              }
+            ]
+          },
+          {
+            id: '6',
+            title: 'Property taxes and homeowner’s insurance',
+            description: 'Property taxes and homeowner\'s insurance are an important part of your monthly payment. Update these assumptions as you move forward to more precisely estimate your affordable monthly payment.',
+            contents: [
+              {
+                class_line: true,
+                id: 't',
+                label: 'Home value',
+                inputPrefix: '$',
+                inputValue: '',
+                description: 'Property taxes are based on the assessed value of a home, which may be different from the home price. But, the typical home price in your target neighborhood is a good rough estimate.'
+              },
+              {
+                class_line: true,
+                id: 'u',
+                label: 'Property tax rate (annual)',
+                inputPrefix: '× $',
+                inputValue: '',
+                description: 'The national median is 1.1%, but rates vary widely by location. Check with your local tax authority for a more precise estimate.'
+              },
+              {
+                class_line: true,
+                id: 'v',
+                label: 'Annual property taxes',
+                inputPrefix: '= $',
+                description: 'The national median is 1.1%, but rates vary widely by location. Check with your local tax authority for a more precise estimate.',
+                math: '6t * 6u'
+              },
+              {
+                class_line: true,
+                id: 'w',
+                label: 'Annual homeowner’s insurance',
+                inputPrefix: '= $',
+                inputValue: '',
+                description: 'The national median is $750, but rates vary by location, the value and features of your home, and the coverage that you select.'
+              },
+              {
+                class_line: true,
+                id: 'x',
+                label: 'Total annual taxes &insurance',
+                inputPrefix: '= $',
+                inputValue: '',
+                description: '',
+                math: '6v + 6w'
+              },
+              {
+                class_line: true,
+                id: 'y',
+                label: 'Monthly taxes & insurance',
+                inputPrefix: '= $',
+                description: '',
+                math: '6x / 12'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        title: 'How much can you afford?',
+        sections: [
+          {
+            id: '7',
+            title: 'Your homeownership budget',
+            description: 'This budget is based on your monthly income and estimated expenses.',
+            contents: [
+              {
+                class_line: true,
+                id: 'z1',
+                label: 'Take-home income',
+                inputPrefix: '- $',
+                math: '1f',
+                description: 'Line F'
+              },
+              {
+                class_line: true,
+                id: 'z2',
+                label: 'Debts',
+                inputPrefix: '- $',
+                math: '2i',
+                description: 'Line I'
+              },
+              {
+                class_line: true,
+                id: 'z3',
+                label: 'Living expenses',
+                inputPrefix: '- $',
+                math: '2j',
+                description: 'Line J'
+              },
+              {
+                class_line: true,
+                id: 'z4',
+                label: 'Future savings',
+                inputPrefix: '- $',
+                math: '3o',
+                description: 'Line O'
+              },
+              {
+                class_line: true,
+                id: 'z5',
+                label: 'Home maintenance',
+                inputPrefix: '- $',
+                math: '4p',
+                description: 'Line P'
+              },
+              {
+                class_line: true,
+                id: 'z6',
+                label: 'Home improvement',
+                inputPrefix: '- $',
+                math: '4q',
+                description: 'Line Q'
+              },
+              {
+                class_line: true,
+                id: 'z7',
+                label: 'Future utilities',
+                inputPrefix: '- $',
+                math: '5s',
+                description: 'Line S'
+              },
+              {
+                class_line: true,
+                id: 'z',
+                label: 'Total available for monthly housing obligations',
+                inputPrefix: '= $',
+                math: '7z1 - 7z2 - 7z3 - 7z4 - 7z5 - 7z6 - 7z7',
+                description: ''
+              }
+            ]
+          },
+          {
+            id: '7a',
+            title: 'What’s included in your total monthly housing obligations?',
+            description: 'The amount you have available for monthly housing obligations needs to cover your principal & interest payment, taxes and insurance, and condo/HOA fees',
+            contents: [
+              {
+                class_line: true,
+                id: 'a',
+                label: 'Total available for monthly housing obligations',
+                inputPrefix: '$',
+                math: '7z',
+                description: 'Line Z'
+              },
+              {
+                class_line: true,
+                id: 'b',
+                label: 'Condo/HOA fees',
+                inputPrefix: '- $',
+                math: '4r',
+                description: 'Line R; Usually not included in your mortgage payment.'
+              },
+              {
+                class_line: true,
+                id: 'c',
+                label: 'Estimated total monthly payment*',
+                inputPrefix: '= $',
+                math: '7aa - 7ab',
+                description: ''
+              },
+              {
+                class_line: true,
+                id: 'd',
+                label: 'Monthly taxes and insurance',
+                inputPrefix: '- $',
+                math: '6y',
+                description: 'Line Y'
+              },
+              {
+                class_line: true,
+                id: 'e',
+                label: 'Estimated monthly principal & interest',
+                inputPrefix: '= $',
+                math: '7ac - 6y',
+                description: 'You’ll need this number to calculate how much you want to spend on a home.'
+              }
+            ]
+          },
+          {
+            id: '8',
+            title: 'Check your percentage',
+            description: '',
+            contents: [
+              {
+                class_line: true,
+                id: 'a',
+                label: 'Total monthly housing obligations',
+                inputPrefix: '$',
+                math: '7z',
+                description: 'Line Z'
+              },
+              {
+                class_line: true,
+                id: 'b',
+                label: 'Pre-tax income',
+                inputPrefix: '÷ $',
+                math: '1c',
+                description: 'Line C'
+              },
+              {
+                class_line: true,
+                id: 'c',
+                label: 'Percentage of your pre-tax income',
+                inputPrefix: '=',
+                math: '7z / 1c',
+                description: ''
+              },
+              {
+                class_line: true,
+                id: 'd',
+                label: 'Percentage of your pre-tax income',
+                inputPrefix: '=',
+                math: '8c * 100',
+                description: 'A mortgage lending rule of thumb is that your total monthly housing obligations should be no more than 28% of your pre-tax income. Lenders may approve you for more or less depending on your overall financial picture.'
+              }
+            ]
+          }
+        ]
+      },
+    ]
+  };
+  $('body').append(template(context));
+
+  function numberWithCommas(x) {
+    x = x.toString();
+    var xParts = x.split('.');
+    if (xParts.length === 2) {
+      x = parseFloat(x).toFixed(4);
+      xParts = x.split('.');
+    }
+    xParts[0] = xParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (xParts[1]) {
+      return xParts[0] + '.' + xParts[1];
+    } else {
+      return xParts[0];
+    }
+  }
+  function getVal(idOrNumber) {
+    var $input = $('#input-'+idOrNumber);
+    if ($input.length === 0) {
+      return idOrNumber;
+    } else {
+      return parseFloat($input.val().replace(',','')) || 0;
+    }
+  }
+  function setVal(id, val) {
+    var inputId = id.indexOf('input-') > -1 ? id : 'input-' + id;
+    var formattedVal = numberWithCommas(val);
+    localStorage.setItem(getStorageId(inputId), formattedVal);
+    $('#' + inputId).val(formattedVal);
+  }
+  function getStorageId(id) {
+    return tabId + '-' + id;
+  }
+  function calculate() {
+    $('input:not([data-math])').each(function() {
+      setVal(this.id, this.value);
+    });
+    $('[data-math]').each(function() {
+      var total = 0;
+      var id = $(this).attr('id').replace('input-', '');
+      var equation = $(this).attr('data-math').replace(/ /g, '');
+      if (equation.split('+').length > 1) {
+        equation.split('+').forEach(function(id) {
+          total += getVal(id);
+        });
+      } else if (equation.split('-').length > 1) {
+        equation.split('-').forEach(function(id, i) {
+          if (i === 0) {
+            total = getVal(id);
+          } else {
+            total -= getVal(id);
+          }
+        });
+      } else if (equation.split('*').length > 1) {
+        equation.split('*').forEach(function(id, i) {
+          if (i === 0) {
+            total = getVal(id);
+          } else {
+            total *= getVal(id);
+          }
+        });
+      } else if (equation.split('/').length > 1) {
+        equation.split('/').forEach(function(id, i) {
+          if (i === 0) {
+            total = getVal(id);
+          } else {
+            total /= getVal(id);
+          }
+        });
+      } else {
+        total = getVal(equation);
+      }
+      setVal(id, total);
+    });
+  }
+  var tabId = window.location.hash.replace('#', '') || 'v1';
+  window.location.hash = tabId;
+  $('input').each(function() {
+    var savedVal = localStorage.getItem(getStorageId(this.id));
+    if (savedVal) {
+      this.value = savedVal;
+    }
+  });
+  calculate();
+  $('input').on('change', calculate);
+  $('input').on('focus', function() {
+    $(this).parents('.line').addClass('line__highlight');
+  });
+  $('input').on('blur', function() {
+    $(this).parents('.line').removeClass('line__highlight');
+  });
+</script>
+
+</body>
+</html>
